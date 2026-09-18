@@ -59,26 +59,30 @@ app.get("/api/shows", async (req, res) => {
   }
 });
 
-// Search shows
+// Search shows by title (partial, case-insensitive)
 app.get("/api/shows/search", async (req, res) => {
   try {
     const { q } = req.query;
+    const trimmed = typeof q === "string" ? q.trim() : "";
 
-    if (!q) {
+    if (!trimmed) {
       return res.status(400).json({
         message: "Search query is required"
       });
     }
 
+    // Escape regex special characters so raw user input is safe
+    const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
     const shows = await db
       .collection("shows")
       .find({
         title: {
-          $regex: q,
+          $regex: escaped,
           $options: "i"
         }
       })
-      .limit(20)
+      .limit(50)
       .toArray();
 
     res.json(shows);
