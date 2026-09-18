@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://show-recommendation-9c1f.vercel.app/';
+const API_BASE_URL = 'https://show-recommendation-9c1f.vercel.app';
 
 export const getAuthToken = () => {
   return localStorage.getItem('token');
